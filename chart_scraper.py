@@ -1,7 +1,9 @@
 import billboard
 import datetime
 
-def getCharts(chart_name, start_date, end_date):
+# Gets all charts between the specified start and end dates.
+# Start date must be a Saturday.
+def get_charts(chart_name, start_date, end_date):
   charts = []
   # Scrape every week from start to end
   cur_date = start_date
@@ -14,6 +16,5 @@ def getCharts(chart_name, start_date, end_date):
 
   return charts
 
-charts = getCharts('hot-100', datetime.date(2015,10,17), datetime.date.today())
-
-print charts[0]
+# charts = getCharts('hot-100', datetime.date(2015,10,17), datetime.date.today())
+# print charts[0]
