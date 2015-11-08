@@ -1,0 +1,19 @@
+import billboard
+import datetime
+
+def getCharts(chart_name, start_date, end_date):
+  charts = []
+  # Scrape every week from start to end
+  cur_date = start_date
+  while (cur_date <= end_date):
+    print(cur_date)
+    date_str = "%s" % cur_date
+    chart = billboard.ChartData(chart_name, cur_date)
+    charts.append(chart)
+    cur_date = cur_date + datetime.timedelta(days = 7)
+
+  return charts
+
+charts = getCharts('hot-100', datetime.date(2015,10,17), datetime.date.today())
+
+print charts[0]
