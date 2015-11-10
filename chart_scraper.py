@@ -4,6 +4,7 @@ import datetime
 # Gets all charts between the specified start and end dates.
 # Start date must be a Saturday.
 def get_charts(chart_name, start_date, end_date):
+  print('Getting charts...')
   charts = []
   # Scrape every week from start to end
   cur_date = start_date
