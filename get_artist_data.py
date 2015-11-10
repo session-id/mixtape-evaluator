@@ -33,9 +33,24 @@ ce_to_songs = dict()
 for chart in charts:
   for entry in chart:
     entry_string = entry.title + ' - ' + entry.artist
-    ce_to_songs[entry_string] = Song(entry.title, [entry.artist], entry.weeks, entry.peakPos)
+    # Deal with Featuring
+    index = entry.artist.find('Featuring')
+    artist = entry.artist
+    if index != -1:
+      artist = entry.artist[:index-1]
+    ce_to_songs[entry_string] = Song(entry.title, [artist], entry.weeks, entry.peakPos)
 
-songs = set()
+# Find statistics on artists
+artist_to_song = dict()
+for _, song in ce_to_songs.iteritems():
+  for artist in song.artists:
+    if artist in artist_to_song:
+      artist_to_song[artist].append(song)
+    else:
+      artist_to_song[artist] = [song]
+
+'''
+songs = []
 # Grab discogs info for each song, don't add if no information found
 for title_artist, song in ce_to_songs.iteritems():
   time.sleep(3.5) # To keep rate limited to at most 20 requests per second
@@ -46,7 +61,14 @@ for title_artist, song in ce_to_songs.iteritems():
       continue
 
     song.update(release_data.artists, release_data.labels, release_data.genres, release_data.styles)
-    songs.add(song)
+    songs.append(song)
     print('Added song: ' + title_artist)
   except:
     print('Skipping song due to exception: ' + title_artist)
+'''
+
+'''
+Note: A better approach to all this song by song method may be to compile a list of all artists at the end
+and grab song data then... however, it will probably still be fairly slow.
+'''
+# Note: look at trying to dissect "Featuring"
