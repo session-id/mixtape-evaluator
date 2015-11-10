@@ -2,9 +2,15 @@ import chart_scraper
 import discogs_getter
 import datetime
 import time
+import pickle
+
+scrape_chart_data = False # Whether or not to scrape billboard for chart data
 
 # All relevant information for a song
 class Song:
+  def __init__(self, **entries):
+    self.__dict__.update(entries)
+
   def __init__(self, title, artists, weeks, peak_pos, labels = [], genres = [], styles = []):
     self.title = title
     self.artists = artists
@@ -21,24 +27,29 @@ class Song:
     self.genres = genres
     self.styles = styles
 
-# Grab charts from 1/1/2000 to 1/1/2012 as training data
-start_date = datetime.date(2000, 1, 1)
-end_date = datetime.date(2000, 1, 14)
-#end_date = datetime.date(2012,1,1)
-charts = chart_scraper.get_charts('hot-100', start_date, end_date)
-print('Charts returned')
+if scrape_chart_data:
+  # Grab charts from 1/1/2000 to 1/1/2012 as training data
+  start_date = datetime.date(2000, 1, 1)
+  #end_date = datetime.date(2000, 1, 14)
+  end_date = datetime.date(2012,1,1)
+  charts = chart_scraper.get_charts('hot-100', start_date, end_date)
+  print('Charts returned')
 
-# Separate out all unique songs by combining all songs with same title and artist
-ce_to_songs = dict()
-for chart in charts:
-  for entry in chart:
-    entry_string = entry.title + ' - ' + entry.artist
-    # Deal with Featuring
-    index = entry.artist.find('Featuring')
-    artist = entry.artist
-    if index != -1:
-      artist = entry.artist[:index-1]
-    ce_to_songs[entry_string] = Song(entry.title, [artist], entry.weeks, entry.peakPos)
+  # Separate out all unique songs by combining all songs with same title and artist
+  ce_to_songs = dict()
+  for chart in charts:
+    for entry in chart:
+      entry_string = entry.title + ' - ' + entry.artist
+      # Deal with Featuring
+      index = entry.artist.find('Featuring')
+      artist = entry.artist
+      if index != -1:
+        artist = entry.artist[:index-1]
+      ce_to_songs[entry_string] = Song(entry.title, [artist], entry.weeks, entry.peakPos)
+
+  pickle.dump(ce_to_songs, open('chart-data/chart_songs_train.pickle', 'wb'))
+
+ce_to_songs = pickle.load(open('chart-data/chart_songs_train.pickle', 'rb'))
 
 # Find statistics on artists
 artist_to_song = dict()
