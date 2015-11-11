@@ -47,7 +47,6 @@ if scrape_chart_data:
         artist = entry.artist[:index-1]
       ce_to_songs[entry_string] = Song(entry.title, [artist], entry.weeks, entry.peakPos)
 
-  pickle.dump(charts, open('chart-data/chart_songs_train.pickle', 'wb'))
   pickle.dump(ce_to_songs, open('chart-data/chart_songs_train.pickle', 'wb'))
 
 ce_to_songs = pickle.load(open('chart-data/chart_songs_train.pickle', 'rb'))

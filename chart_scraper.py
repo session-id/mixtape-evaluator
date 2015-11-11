@@ -11,10 +11,13 @@ def get_charts(chart_name, start_date, end_date):
   while (cur_date <= end_date):
     print(cur_date)
     date_str = "%s" % cur_date
-    chart = billboard.ChartData(chart_name, cur_date)
-    # Only add charts with entries
-    if (len(chart) > 0):
-      charts.append(chart)
+    try:
+      chart = billboard.ChartData(chart_name, cur_date)
+      # Only add charts with entries
+      if (len(chart) > 0):
+        charts.append(chart)
+    except:
+      
     cur_date = cur_date + datetime.timedelta(days = 7)
 
   return charts
