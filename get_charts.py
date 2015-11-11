@@ -26,6 +26,6 @@ for chart_name in chart_names:
   start_date = datetime.date(2000, 1, 1)
   end_date = datetime.date(2015, 11, 1)
   charts = chart_scraper.get_charts(chart_name, start_date, end_date)
-  print('Charts returned for' + chart_name)
+  print('Charts returned for ' + chart_name)
 
   pickle.dump(charts, open('chart-data/' + chart_name + '_charts.pickle', 'wb'))
