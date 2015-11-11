@@ -17,9 +17,5 @@ def get_charts(chart_name, start_date, end_date):
 
   return charts
 
-# Writes the given charts to a file
-def write_charts_to_file(charts, filename):
-  
-
 # charts = getCharts('hot-100', datetime.date(2015,10,17), datetime.date.today())
 # print charts[0]

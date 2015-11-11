@@ -60,11 +60,14 @@ for _, song in ce_to_songs.iteritems():
     else:
       artist_to_song[artist] = [song]
 
-'''
+# 4718 songs from 1414 artists
+
+# NOTE: Code will take roughly 5 hours to extract all information for songs
+
 songs = []
 # Grab discogs info for each song, don't add if no information found
 for title_artist, song in ce_to_songs.iteritems():
-  time.sleep(3.5) # To keep rate limited to at most 20 requests per second
+  time.sleep(4) # To keep rate limited to at most 20 requests per second
   try:
     release_data = discogs_getter.get_release_data(song.title, song.artists[0])
     if (release_data == None):
@@ -76,10 +79,5 @@ for title_artist, song in ce_to_songs.iteritems():
     print('Added song: ' + title_artist)
   except:
     print('Skipping song due to exception: ' + title_artist)
-'''
 
-'''
-Note: A better approach to all this song by song method may be to compile a list of all artists at the end
-and grab song data then... however, it will probably still be fairly slow.
-'''
-# Note: look at trying to dissect "Featuring"
+pickle.dump(songs, open('chart-data/discogs_songs_train.pickle', 'wb'))
