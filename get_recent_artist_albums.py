@@ -6,6 +6,7 @@ import datetime
 import spotipy
 
 build_artists = False # Whether or not to build the recent artists list from scratch
+build_artist_to_ids = False # Whether or not to build the artists to id table
 
 start_date = datetime.date(2009, 1, 1)
 
@@ -31,36 +32,33 @@ if build_artists:
 artists = pickle.load(open('chart-data/recent_artists.pickle', 'rb'))
 print(str(len(artists)) + ' artists loaded.')
 
-# TODO: Implement more robust track matching
-# Determine whether two track names match
-def track_match(track1, track2):
-  return track1 == track2
+if build_artist_to_ids:
+  spotify = spotipy.Spotify()
+  artist_to_id = {}
+  # Spotify query for artists
+  for artist in artists:
+    print('Finding artist id for ' + artist)
+    results = spotify.search(q = 'artist:' + artist, type = 'artist')
+    artist_id = ''
+    # Find artist that matches name
+    for search_artist in results['artists']['items']:
+      if search_artist['name'].lower() == artist.lower():
+        artist_id = search_artist['id']
+        break
 
-spotify = spotipy.Spotify()
-artist_to_id = {}
-# Spotify query for artists
-for artist in artists:
-  print('Finding artist id for ' + artist)
-  results = spotify.search(q = 'artist:' + artist, type = 'artist')
-  artist_id = ''
-  # Find artist that matches name
-  for search_artist in results['artists']['items']:
-    if search_artist['name'].lower() == artist.lower():
-      artist_id = search_artist['id']
-      break
+    # If match found
+    if artist_id != '':
+      artist_to_id[artist] = artist_id
 
-  if artist_id != '':
-    artist_to_id[artist] = artist_id
+  pickle.dump(artist_to_id, open('chart-data/artist_to_spotify_id.pickle', 'wb'))
 
-pickle.dump(artist_to_id, open('chart-data/artist_to_spotify_id.pickle', 'wb'))
+artist_to_id = pickle.load(open('chart-data/artist_to_spotify_id.pickle', 'rb'))
 
 # Query for album data
 artist_to_albums = {}
 for artist, artist_id in artist_to_id.iteritems():
-  print ('Loading albums for ' + artist)
-  # If match found
-  if artist_id != '':
-    artist_to_albums[artist] = {}
+  try:
+    print ('Loading albums for ' + artist)
 
     results = spotify.artist_albums(artist_id, album_type='album')
     albums = results['items']
@@ -68,6 +66,7 @@ for artist, artist_id in artist_to_id.iteritems():
       results = spotify.next(results)
       albums.extend(results['items'])
 
+    artist_to_albums[artist] = {}
     # Find all relevant albums
     for album in albums:
       s_album = spotify.album(album['id'])
@@ -79,5 +78,6 @@ for artist, artist_id in artist_to_id.iteritems():
       if release_date >= start_date:
         tracks = map(lambda track: track['name'], s_album['tracks']['items'])
         artist_to_albums[artist][s_album['name']] = (release_date, tracks)
+  except:
 
 pickle.dump(artist_to_albums, open('chart-data/artist_to_albums.pickle', 'wb'))
