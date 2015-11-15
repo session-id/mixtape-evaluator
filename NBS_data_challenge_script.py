@@ -1,5 +1,5 @@
 import csv
-max_map_size = 5000
+max_map_size = 100
 num_days_before_release = 60
 num_days_after_release = 30
 count_metrics = []
@@ -100,6 +100,6 @@ def write_csv_file(training_examples_list):
 
 artist_map = read_csv_file()
 training_examples_list = create_feature_vector(artist_map)
-print "training examples " + str(training_examples_list)
+#print "training examples " + str(training_examples_list)
 write_csv_file(training_examples_list)
 #print "Initial artist map" + str(artist_map)
