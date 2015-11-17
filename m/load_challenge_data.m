@@ -23,25 +23,26 @@ clear artist_shift_b
 % Recover days that have relevant fields of information
 album_releases = ~isnan(C{104}); % IsReleaseDay
 has_fb_likes_t = ~isnan(C{6}); % Facebook_PageLikes_t
-has_insta_followers_t = ~isnan(C{11}); % Instagram_Followers_t
+has_twitter_followers_t = ~isnan(C{74}); % Twitter_Followers_t
 
 % youtube_views_delta contains total number of views (from
 % Youtube_Video_Views_t) over the next [shift_back] days from any day
 youtube_views_delta = n_delta(C{101}, shift_back);
 youtube_views_delta = [youtube_views_delta(shift_back+1:end);...
-    ones([shift_forward, 1])];
+    ones([shift_back, 1])];
 has_youtube_delta = ~isnan(youtube_views_delta);
 
 target_albums = find(album_releases & has_fb_likes_t & has_youtube_delta...
-    & viable_days);
+    & has_twitter_followers_t & viable_days);
 
 % Make linear regression features
 fb_likes_t = C{6}(target_albums);
+tw_followers_t = C{74}(target_albums);
 youtube_views_delta = youtube_views_delta(target_albums);
 
 % Simple linear regression on the log of the variables
-X = [log10(fb_likes_t), ones(size(fb_likes_t))];
-y = log10(youtube_views_delta);
+X = [log10(tw_followers_t), ones(size(fb_likes_t))];
+y = log10(fb_likes_t);
 beta = X \ y;
 plot(X(:,1), y, 'o')
 hold on
@@ -52,10 +53,3 @@ hold off
 error = X * beta - y;
 error_stdev = sqrt(sum(error .^ 2) / length(y))
 abs_error = sum(abs(error)) / length(y)
-
-C_sum = zeros(size(C));
-for i=1:length(C)
-    if i ~= 1 && i ~= 4
-        C_sum(i) = sum(~isnan(C{i}));
-    end
-end

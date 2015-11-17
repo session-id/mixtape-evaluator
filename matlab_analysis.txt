@@ -1,0 +1,7 @@
+Overall analysis:
+
+0.8789 log stdev error for linear regression of fb_likes_t vs youtube_delta
+0.9092 log stdev error for linear regression of tw_followers_t vs youtube_delta
+
+fb_likes and tw_followers very much correlated: 0.6522 log stdev error for linear reg between the two
+- Visually distinct correlation

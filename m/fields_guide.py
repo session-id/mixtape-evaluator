@@ -8,9 +8,7 @@ for i in range(len(fields_list)):
 
 '''
 Relevant fields for initial analysis:
-YouTube_VideoViews_d
 YouTube_VideoViews_t
-Facebook_PageLikes_d
 Facebook_PageLikes_t
 Facebook_TalkingAboutThis_7day__d
 '''

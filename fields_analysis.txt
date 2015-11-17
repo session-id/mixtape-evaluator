@@ -1,0 +1,113 @@
+909457 rows of total data
+2157 album releases
+225024 rows have number of Youtube plays over next 28 days
+
+0.8789 log stdev error for linear regression of fb_likes_t vs youtube_delta
+0.9092 log stdev error for linear regression of tw_followers_t vs youtube_delta
+fb_likes and tw_followers very much correlated: 0.65
+
+How many rows are not nan by field:
+
+ArtistId: 909457
+Day: 909457
+Date: 0
+Facebook_PageLikes_d: 653002
+Facebook_PageLikes_t: 665195
+Facebook_TalkingAboutThis_7day__d: 380359
+Instagram_Comments_d: 3045
+Instagram_Comments_t: 3215
+Instagram_Followers_d: 3045
+Instagram_Followers_t: 3215
+Instagram_Friends_Following__d: 3045
+Instagram_Friends_Following__t: 3215
+Instagram_Likes_d: 3045
+Instagram_Likes_t: 3215
+Instagram_Photos_d: 3045
+Instagram_Photos_t: 3215
+Lastfm_Listeners_d: 299692
+Lastfm_Listeners_t: 455860
+Lastfm_Plays_d: 302738
+Lastfm_Plays_t: 458271
+Lastfm_Shouts_d: 146837
+Lastfm_Shouts_t: 227215
+MediabaseFeed_RadioSpins_d: 569037
+MySpace_Friends_d: 766306
+MySpace_Friends_t: 779591
+MySpace_Plays_d: 760134
+MySpace_Plays_t: 774768
+MySpace_ProfileViews_d: 556964
+MySpace_ProfileViews_t: 610851
+Pandora_Fans_d: 116394
+Pandora_Fans_t: 118502
+Purevolume_Comments_d: 110197
+Purevolume_Comments_t: 114880
+Purevolume_Fans_Favorites__d: 109486
+Purevolume_Fans_Favorites__t: 114165
+Purevolume_Plays_d: 109482
+Purevolume_Plays_t: 114163
+RadioWave_InternetRadioImpressions_d: 2618
+RadioWave_InternetRadioSpins_d: 261874
+RadioWave_PandoraImpressions_d: 43553
+RadioWave_PandoraSpins_d: 43558
+RadioWave_RhapsodyImpressions_d: 42035
+RadioWave_RhapsodySpins_d: 42035
+RadioWave_SiriusImpressions_d: 51545
+RadioWave_SiriusSpins_d: 51547
+RadioWave_SlackerImpressions_d: 16989
+RadioWave_SlackerSpins_d: 16991
+Rdio_Collections_d: 189471
+Rdio_Collections_t: 205773
+Rdio_Comments_d: 189471
+Rdio_Comments_t: 205773
+Rdio_Playlists_d: 189471
+Rdio_Playlists_t: 205773
+Rdio_Plays_d: 230502
+Rdio_Plays_t: 249268
+Rdio_TrackListeners_d: 189471
+Rdio_TrackListeners_t: 205773
+ReverbNation_Fans_d: 56704
+ReverbNation_Fans_t: 57179
+ReverbNation_Plays_d: 116186
+ReverbNation_Plays_t: 118882
+ReverbNation_RemoteImpressions_d: 7938
+ReverbNation_RemoteImpressions_t: 8204
+SoundCloud_Comments_d: 122182
+SoundCloud_Comments_t: 125021
+SoundCloud_Downloads_d: 122325
+SoundCloud_Downloads_t: 125170
+SoundCloud_Followers_d: 138947
+SoundCloud_Followers_t: 142155
+SoundCloud_Plays_d: 122225
+SoundCloud_Plays_t: 125120
+Twitter_Followers_d: 529343
+Twitter_Followers_t: 538848
+Twitter_Friends_Following__d: 384450
+Twitter_Friends_Following__t: 389847
+Twitter_Lists_d: 394066
+Twitter_Lists_t: 399570
+Twitter_Tweets_d: 394245
+Twitter_Tweets_t: 399761
+Vevo_VideoViews_d: 425821
+Vevo_VideoViews_t: 439619
+Vimeo_Comments_d: 40056
+Vimeo_Comments_t: 40988
+Vimeo_Plays_d: 40034
+Vimeo_Plays_t: 40965
+Vimeo_VideoLikes_d: 40054
+Vimeo_VideoLikes_t: 40987
+Wikipedia_Pageviews_d: 742363
+YouTube_ChannelViews_d: 415833
+YouTube_ChannelViews_t: 478777
+YouTube_Subscribers_d: 306659
+YouTube_Subscribers_t: 374769
+YouTube_Thumbs_d: 180649
+YouTube_Thumbs_t: 203664
+YouTube_VideoFavorites_d: 176361
+YouTube_VideoFavorites_t: 207244
+YouTube_VideoRaters_d: 207075
+YouTube_VideoRaters_t: 232529
+YouTube_VideoViews_d: 269970
+YouTube_VideoViews_t: 285222
+iTunes_AlbumUnits_Net__d: 608596
+iTunes_TrackUnits_Net__d: 723379
+IsReleaseDay: 2157
