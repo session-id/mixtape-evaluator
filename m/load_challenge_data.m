@@ -11,7 +11,7 @@ end
 % Find times when there is data for artist reaching both backwards and
 % forwards
 shift_back = 28; % Number of days to shift all data backwards by
-shift_forward = 0; % Number of days to shift all data forwards by
+shift_forward = 7; % Number of days to shift all data forwards by
 back_buffer = -ones([shift_back, 1]);
 forward_buffer = -ones([shift_forward, 1]);
 artist_shift_f = [forward_buffer; C{2}(1:end-shift_forward)];
@@ -32,21 +32,28 @@ youtube_views_delta = [youtube_views_delta(shift_back+1:end);...
     ones([shift_back, 1])];
 has_youtube_delta = ~isnan(youtube_views_delta);
 
+% fb_likes_delta contains total delta of fb likes over last week. It's sort
+% of like a measure of recent artist momentum
+fb_likes_delta = n_delta(C{6}, shift_forward);
+has_fb_likes_delta = ~isnan(fb_likes_delta);
+
 target_albums = find(album_releases & has_fb_likes_t & has_youtube_delta...
-    & has_twitter_followers_t & viable_days);
+    & viable_days & has_fb_likes_delta);
 
 % Make linear regression features
 fb_likes_t = C{6}(target_albums);
 tw_followers_t = C{74}(target_albums);
+fb_likes_delta = fb_likes_delta(target_albums);
+fb_likes_delta_sc = max(fb_likes_delta, 1) ./ fb_likes_t;
 youtube_views_delta = youtube_views_delta(target_albums);
 
 % Simple linear regression on the log of the variables
-X = [log10(tw_followers_t), ones(size(fb_likes_t))];
-y = log10(fb_likes_t);
+X = [fb_likes_delta_sc, ones(size(fb_likes_t))];
+y = log10(youtube_views_delta);
 beta = X \ y;
 plot(X(:,1), y, 'o')
 hold on
-xspace = [linspace(0,8,10)', ones([10 1])];
+xspace = [linspace(0,max(X(:,1)),10)', ones([10 1])];
 plot(xspace(:,1), xspace * beta)
 hold off
 
