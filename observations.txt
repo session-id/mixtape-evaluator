@@ -1,0 +1,29 @@
+To start off the project, I ran basic linear regressions using cumulative data from social media - mostly Facebook, Twitter, and Instagram - against the additional youtube play counts the month after the release of an album. Because the data spans so many different scales, a linear regression in log space seemed more reasonable, and simply using Facebook page likes alone predicts youtube play counts with an average squared error in log space of about 0.9.
+
+The addition of predictors other than the total number of Facebook likes seems to have little effect on the overall performance of simple linear regressions. Using all three social media sources does not lower the average squared error below 0.8, and it's not too difficult to see why: Instagram data is only available for 0.3% of all artist-days, and Twitter data seems to be fairly correlated with Facebook data.
+
+As a fast way of dealing with missing data, I normalized all columns so that they had mean zero and variance one and inserted random values from N(0,1) in positions where no data was available. I performed this imputation multiple times and averaged to get a rough covariance matrix for Facebook, Twitter, and Instagram predictors.
+
+The covariance matrix for Facebook_likes, Insta_commments, Insta_followers, Insta_likes, Tw_followers, Tw_likes was:
+
+    0.9997    0.0012    0.0021    0.0028    0.4013    0.0172
+    0.0012    0.9997    0.0030    0.0039    0.0027    0.0005
+    0.0021    0.0030    0.9991    0.0028    0.0024    0.0011
+    0.0028    0.0039    0.0028    1.0000    0.0031    0.0009
+    0.4013    0.0027    0.0024    0.0031    1.0000    0.1760
+    0.0172    0.0005    0.0011    0.0009    0.1760    1.0001
+
+As you can see, there was quite a bit of correlation between Facebook likes and Twitter followers, with less correlation between these predictors and Twitter likes. However, this isn't too surprisingly, since the imputation rates differ significantly for these predictors:
+
+    0.2686    0.9965    0.9965    0.9965    0.4075    0.5604
+
+The first entry is the relatively low imputation rate for FB likes, while the fifth is that of Twitter Followers and the last is that of Twitter likes. Because imputed values are drawn iid from N(0,1), they can't be correlated with other predictors, and thus fields with higher imputation rates are likely to have less covariance with other fields.
+
+Obviously, a fancier imputation that takes into account the overall correlation structure of all of these predictors (I think we can safely remove the Instagram predictors due to their lack of data) may be able to produce better regression results, but I don't think using the total number of Facebook likes and Twitter followers alone will yield a very accurate model because of their high correlation.
+
+I also tried adding momentum based predictors, such as the amount of additional likes or followers garnered by an artist in the 2 weeks prior to a release, but these also did not add much value to the regression model. The average squared error in log space of predictors using these momentum features still remained higher than 0.8.
+
+Using imputed data, the actual squared error using fb_likes vs youtube_view_delta was 0.9007. Adding in momentum features and twitter data only improved the squared error to 0.8868. Average absolute error was 0.7078 using just fb_likes and 0.6996 using all features.
+
+Youtube play count deltas were only available, though, for 26% of the total data, limiting the number of albums we could use as data from 2157 to 734. However, I found that iTunes track plays were available on 70% of all data and 1521 of all albums, a much more comprehensive set. If only one of youtube plays or itunes plays is desired, then 1660 of all albums are covered.
+
