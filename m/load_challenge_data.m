@@ -12,7 +12,7 @@ end
 % Find times when there is data for artist reaching both backwards and
 % forwards
 shift_back = 28; % Number of days to shift all data backwards by
-shift_forward = 7; % Number of days to shift all data forwards by
+shift_forward = 14; % Number of days to shift all data forwards by
 back_buffer = -ones([shift_back, 1]);
 forward_buffer = -ones([shift_forward, 1]);
 artist_shift_f = [forward_buffer; C{2}(1:end-shift_forward)];
@@ -33,6 +33,13 @@ youtube_views_delta = [youtube_views_delta(shift_back+1:end);...
     ones([shift_back, 1])];
 has_youtube_delta = ~isnan(youtube_views_delta);
 
+temp = C{103};
+temp(isnan(temp)) = 0; % Set all NaN's to zero
+itunes_tracks_delta = n_delta(cumsum(temp), shift_back);
+itunes_tracks_delta = [itunes_tracks_delta(shift_back+1:end);...
+    ones([shift_back, 1])];
+has_itunes_delta = ~isnan(C{103});
+
 % fb_likes_delta contains total delta of fb likes over last week. It's sort
 % of like a measure of recent artist momentum
 fb_likes_delta = n_delta(C{6}, shift_forward);
@@ -49,12 +56,12 @@ fb_likes_delta_sc = max(fb_likes_delta, 1) ./ fb_likes_t;
 youtube_views_delta = youtube_views_delta(target_albums);
 
 % Simple linear regression on the log of the variables
-X = [fb_likes_delta_sc, ones(size(fb_likes_t))];
+X = [log10(fb_likes_t), ones(size(fb_likes_t))];
 y = log10(youtube_views_delta);
 beta = X \ y;
 plot(X(:,1), y, 'o')
 hold on
-xspace = [linspace(0,max(X(:,1)),10)', ones([10 1])];
+xspace = [linspace(min(X(:,1)),max(X(:,1)),10)', ones([10 1])];
 plot(xspace(:,1), xspace * beta)
 hold off
 
