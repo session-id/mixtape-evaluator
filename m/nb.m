@@ -27,27 +27,47 @@ end
 
 % Hand coded Naive Bayes to work with the prescribed labels
 
-X = features(:,1:end-11);
-y = features(:,end-10:end);
+X_master = features(:,1:end-11);
+y_master = features(:,end-10:end);
+num_features = size(X,2); % Number of non-y features
 
-phi_k_given_y = ones([2, numTokens]);
-phi_y = 0; % Probability of sample being spam
+% Build training set
+X = X_master(1:int32(end*2/3),:);
+y = y_master(1:int32(end*2/3),:);
 
-for i = 1:numTrainDocs
-    y = full(trainCategory(i)); % Class
-    x = trainMatrix(i,:); % Token frequency vector
-    
-    % Increase frequency of each (class, token) event
-    phi_k_given_y(y + 1,:) = phi_k_given_y(y + 1,:) + x;
-    % Increase frequency of (class) event
-    phi_y = phi_y + y;
+phi_k_given_y = ones(size(y,2), size(X,2));
+phi_y = ones(size(y,2), 1);
+
+for i=1:size(X,1)
+    index = find(y(i,:));
+    phi_y(index) = phi_y(index) + 1;
+    % Increase frequency of each (class, feature) event
+    phi_k_given_y(index,:) = phi_k_given_y(index,:) + X(i,:);
 end
 
 % Perform normalization
-phi_y = phi_y / numTrainDocs;
-phi_k_given_y = phi_k_given_y ./ repmat(sum(phi_k_given_y, 2), ...
-    [1 size(phi_k_given_y, 2)]);
+phi_k_given_y = phi_k_given_y ./ repmat(sum(phi_k_given_y, 1), ...
+    [size(phi_k_given_y, 1) 1]);
+phi_y = phi_y / sum(phi_y);
 
 % Take log of data
 log_phi_k_given_y = log(phi_k_given_y);
 log_phi_y = log(phi_y);
+
+% Make test set
+X = X_master(int32(end*2/3)+1:end,:);
+y = y_master(int32(end*2/3)+1:end,:);
+
+num_correct = 0;
+total_error = 0;
+for i=1:size(X,1)
+    probabilities = log_phi_k_given_y * X(i,:)' + log_phi_y;
+    prediction = find(probabilities == max(probabilities));
+    if (y(i,prediction) == 1)
+        num_correct = num_correct + 1;
+    end
+    total_error = total_error + abs(prediction - find(y(i,:)));
+end
+
+accuracy = num_correct / size(X,1)
+avg_error = total_error / size(X,1)
