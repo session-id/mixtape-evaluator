@@ -37,4 +37,11 @@ Linear regression using log youtube data to predict log itunes data with an inte
     0.4585
     1.6972
 
-Using log itunes data as the y variable in linear regression with vanilla fb and twitter data yielded even poorer results than the youtube regression, with a stdev error of 1.0751. We definitely need more features at this point to further differentiate the results, or we can bucket the variables into broader categories and run classifiers.
+Using log itunes data as the y variable in linear regression with vanilla fb and twitter data yielded even poorer results than the youtube regression, with a stdev error of 1.0751. We definitely need more features at this point to further differentiate the results, or we can bucket the response variable into discrete categories and try running specific classifiers on it.
+
+It seems like not having data for facebook likes (likely the result of not having a facebook page) is definitely correlated with the number of youtube play counts after an album release. The covariance matrix for the binary variable has_fb_likes and youtube_views_delta is
+
+    0.1685    0.1345
+    0.1345    1.4106
+
+indicating, a definite correlation of album success and having a Facebook page. If all predictors were discretized and run in a classifier like Naive Bayes, N/A's could be explicitly given their own category to take into account this effect. This also means that imputation is probably not the best approach to dealing with data, because it is definitely NMAR.
