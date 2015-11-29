@@ -45,3 +45,14 @@ It seems like not having data for facebook likes (likely the result of not havin
     0.1345    1.4106
 
 indicating, a definite correlation of album success and having a Facebook page. If all predictors were discretized and run in a classifier like Naive Bayes, N/A's could be explicitly given their own category to take into account this effect. This also means that imputation is probably not the best approach to dealing with data, because it is definitely NMAR.
+
+
+Naive Bayes Implementation
+
+I implemented a custom form of Naive Bayes that turned log fb and twitter data into binary features based on how many standard deviations values were from the mean. Buckets were (-inf,2), (-2,-1.5), (-1.5,-1), (-1,-0.5), (-0.5,0), (0,0.5), (0.5,1), (1,1.5), (1.5,2), (2, inf), and NaN. Notably, NaN's were treated as a separate category for each original variable to take into account the fact that NaN's contained statistical significance as well.
+
+All album-days where itunes deltas were available were used as the dataset for the classifier, consisting of 1577 album-days in total. 526 of these days were devoted to testing the classifier while 1051 of these days were devoted to training it.
+
+The resulting Naive Bayes classifier only acheived a 29% accuracy at classifying itunes sales data into the correct bucket out of 10 possible choices. The average absolute difference between the actual and predicted bucket indices was 1.0875, or slightly more than one bucket. The fact that much of the data is quite correlated may be responsible for part of the poor performance of the Naive Bayes classifier.
+
+An SVM could be run on the data as well, but the number of total training + testing examples is quite low. More sophisticated techniques like LOOCV or batch validation may be able to utilize more of the dataset during training and acheive better accuracy, given the fact that SVM's generally need more data to perform well than NB classifiers.
