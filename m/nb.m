@@ -46,8 +46,12 @@ for i=1:size(X,1)
 end
 
 % Perform normalization
-phi_k_given_y = phi_k_given_y ./ repmat(sum(phi_k_given_y, 1), ...
-    [size(phi_k_given_y, 1) 1]);
+for i=1:num_buckets:size(phi_k_given_y,2)
+    norm_factor = sum(phi_k_given_y(:,i+num_buckets-1),2);
+    phi_k_given_y(:,i:i+num_buckets-1) = phi_k_given_y(:,i:i+num_buckets-1)...
+        ./ repmat(norm_factor, [1 num_buckets]);
+end
+
 phi_y = phi_y / sum(phi_y);
 
 % Take log of data
