@@ -46,10 +46,18 @@ for i=1:size(X,1)
 end
 
 % Perform normalization
-for i=1:num_buckets:size(phi_k_given_y,2)
-    norm_factor = sum(phi_k_given_y(:,i+num_buckets-1),2);
-    phi_k_given_y(:,i:i+num_buckets-1) = phi_k_given_y(:,i:i+num_buckets-1)...
-        ./ repmat(norm_factor, [1 num_buckets]);
+normalization_method = 2;
+
+if (normalization_method == 1)
+    for i=1:num_buckets:size(phi_k_given_y,2)
+        norm_factor = sum(phi_k_given_y(:,i+num_buckets-1),2);
+        phi_k_given_y(:,i:i+num_buckets-1) = phi_k_given_y(:,i:i+num_buckets-1)...
+            ./ repmat(norm_factor, [1 num_buckets]);
+    end
+else
+    % Alternate normalization (not exactly NB)
+    phi_k_given_y = phi_k_given_y ./ repmat(sum(phi_k_given_y,1), ...
+    [size(phi_k_given_y,1) 1]);
 end
 
 phi_y = phi_y / sum(phi_y);
@@ -65,7 +73,10 @@ y = y_master(int32(end*2/3)+1:end,:);
 num_correct = 0;
 total_error = 0;
 for i=1:size(X,1)
-    probabilities = log_phi_k_given_y * X(i,:)' + log_phi_y;
+    probabilities = log_phi_k_given_y * X(i,:)';
+    if normalization_method == 1
+        probabilities = probabilities + log_phi_y;
+    end
     prediction = find(probabilities == max(probabilities));
     if (y(i,prediction) == 1)
         num_correct = num_correct + 1;
