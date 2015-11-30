@@ -4,7 +4,7 @@ target_albums = find(album_releases & has_itunes_delta & viable_days);
 
 % Norm fields loader taken from pca
 pca_field_ids = [6 19 74 80]; % FB, Last, Tw, Tw
-pca_fields = [cell2mat(C(:, pca_field_ids)), itunes_tracks_delta];
+pca_fields = [cell2mat(C(:, pca_field_ids)), itunes_tracks_delta2, itunes_tracks_delta];
 log_pca_fields = safelog(pca_fields);
 means = nanmean(log_pca_fields);
 stdevs = nanstd(log_pca_fields);
@@ -27,8 +27,8 @@ end
 
 % Hand coded Naive Bayes to work with the prescribed labels
 
-X_master = features(:,1:end-11);
-y_master = features(:,end-10:end);
+X_master = features(:,1:end-num_buckets);
+y_master = features(:,end-num_buckets+1:end);
 num_features = size(X,2); % Number of non-y features
 
 % Build training set
@@ -72,15 +72,19 @@ y = y_master(int32(end*2/3)+1:end,:);
 
 num_correct = 0;
 total_error = 0;
+predictions = zeros(size(X,1),1);
+actual = zeros(size(X,1),1);
 for i=1:size(X,1)
     probabilities = log_phi_k_given_y * X(i,:)';
     if normalization_method == 1
         probabilities = probabilities + log_phi_y;
     end
     prediction = find(probabilities == max(probabilities));
+    predictions(i) = prediction;
     if (y(i,prediction) == 1)
         num_correct = num_correct + 1;
     end
+    actual(i) = find(y(i,:));
     total_error = total_error + abs(prediction - find(y(i,:)));
 end
 

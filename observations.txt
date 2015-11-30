@@ -53,6 +53,22 @@ I implemented a custom form of Naive Bayes that turned log fb and twitter data i
 
 All album-days where itunes deltas were available were used as the dataset for the classifier, consisting of 1577 album-days in total. 526 of these days were devoted to testing the classifier while 1051 of these days were devoted to training it.
 
-The resulting Naive Bayes classifier only acheived a 30% accuracy at classifying itunes sales data into the correct bucket out of 10 possible choices. The average absolute difference between the actual and predicted bucket indices was 1.0875, or slightly more than one bucket. The fact that much of the data is quite correlated may be responsible for part of the poor performance of the Naive Bayes classifier.
+The resulting Naive Bayes classifier only acheived a 31% accuracy at classifying itunes sales data into the correct bucket out of 10 possible choices. The average absolute difference between the actual and predicted bucket indices was 1.0875, or slightly more than one bucket. The fact that much of the data is quite correlated may be responsible for part of the poor performance of the Naive Bayes classifier.
+
+Adding last_fm listeners as an additional feature actually reduced the efficacy of the overall classifier.
+
+With broader buckets for all of the variables as well as the responding y variable (one sigma wide instead of half sigma wide) the classifier was able to acheive 52% accuracy on the dataset as a whole. However, the classifier seems to only predict the intermediate sigmas and never more extreme sigmas, which is not helpful in identifying which hits will be big successes. The NB classifier only correctly identified 5 of the 40 hits that sold between 1 and 2 standard deviations higher than the mean.
 
 An SVM could be run on the data as well, but the number of total training + testing examples is quite low. More sophisticated techniques like LOOCV or batch validation may be able to utilize more of the dataset during training and acheive better accuracy, given the fact that SVM's generally need more data to perform well than NB classifiers.
+
+Using past itunes data as an additional feature greatly improves accuracy, unsurprisingly. This boosts Naive Bayes' performance on wide buckets (7 total buckets) up to 87%, which is unsurprising given how few albums have significant change in itunes deltas after album release. Using the narrow 0.5 sigma buckets (11 total buckets), overall accuracy is 78%.
+
+
+Relationship between past itunes data and future itunes data
+
+The change in number of tracks per day that an artist gets on iTunes doesn't change much with an album release - the median artist gets about 5% more tracks per day following a release. For album units, the difference is even lower - the median artist only gets 1% more albums per day following a release. On the whole, however, itunes album unit deltas are extremely strongly correlated with itunes track unit deltas, with a covariance matrix of
+
+    1.6946    1.5460
+    1.5460    1.5597
+
+so it shouldn't really matter which factor is used as the responding variable in analysis.
