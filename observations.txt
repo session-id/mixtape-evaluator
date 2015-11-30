@@ -53,8 +53,6 @@ I implemented a custom form of Naive Bayes that turned log fb and twitter data i
 
 All album-days where itunes deltas were available were used as the dataset for the classifier, consisting of 1577 album-days in total. 526 of these days were devoted to testing the classifier while 1051 of these days were devoted to training it.
 
-The resulting Naive Bayes classifier only acheived a 20% accuracy at classifying itunes sales data into the correct bucket out of 10 possible choices. The average absolute difference between the actual and predicted bucket indices was 1.0875, or slightly more than one bucket. The fact that much of the data is quite correlated may be responsible for part of the poor performance of the Naive Bayes classifier.
-
-Using the probability table obtained during Naive Bayes training in a different way, normalizing the probability of each feature occurence over all classes, yields a better but still not stellar 28% classification accuracy. I'm also unsure how to justify this method of normalization right now.
+The resulting Naive Bayes classifier only acheived a 30% accuracy at classifying itunes sales data into the correct bucket out of 10 possible choices. The average absolute difference between the actual and predicted bucket indices was 1.0875, or slightly more than one bucket. The fact that much of the data is quite correlated may be responsible for part of the poor performance of the Naive Bayes classifier.
 
 An SVM could be run on the data as well, but the number of total training + testing examples is quite low. More sophisticated techniques like LOOCV or batch validation may be able to utilize more of the dataset during training and acheive better accuracy, given the fact that SVM's generally need more data to perform well than NB classifiers.

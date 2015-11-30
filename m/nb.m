@@ -3,7 +3,7 @@
 target_albums = find(album_releases & has_itunes_delta & viable_days);
 
 % Norm fields loader taken from pca
-pca_field_ids = [6 74 80];
+pca_field_ids = [6 19 74 80]; % FB, Last, Tw, Tw
 pca_fields = [cell2mat(C(:, pca_field_ids)), itunes_tracks_delta];
 log_pca_fields = safelog(pca_fields);
 means = nanmean(log_pca_fields);
@@ -46,11 +46,11 @@ for i=1:size(X,1)
 end
 
 % Perform normalization
-normalization_method = 2;
+normalization_method = 1;
 
 if (normalization_method == 1)
     for i=1:num_buckets:size(phi_k_given_y,2)
-        norm_factor = sum(phi_k_given_y(:,i+num_buckets-1),2);
+        norm_factor = sum(phi_k_given_y(:,i:i+num_buckets-1),2);
         phi_k_given_y(:,i:i+num_buckets-1) = phi_k_given_y(:,i:i+num_buckets-1)...
             ./ repmat(norm_factor, [1 num_buckets]);
     end
