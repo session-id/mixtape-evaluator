@@ -25,6 +25,14 @@ for i=1:size(data,1)
     end
 end
 
+% Special y feature for change in itunes delta
+%{
+for i=1:size(data,1)
+    features(i,end-num_buckets+1:end) = sigma_bucket(log(itunes_tracks_delta(target_albums(i)) ...
+        ./ (2 * itunes_tracks_delta2(target_albums(i)) + 1)), 0.25, 1)';
+end
+%}
+
 % Hand coded Naive Bayes to work with the prescribed labels
 
 X_master = features(:,1:end-num_buckets);
