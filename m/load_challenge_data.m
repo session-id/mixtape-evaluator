@@ -1,6 +1,6 @@
 % Reads the data from the challenge directly into matlab
 
-load_data = true; % Set to true to load data
+load_data = false; % Set to true to load data
 if (load_data)
     fileId = fopen('challenge_data.csv');
     header = fgetl(fileId);
@@ -65,7 +65,7 @@ fb_likes_delta_sc = max(fb_likes_delta, 1) ./ fb_likes_t;
 youtube_views_delta = youtube_views_delta(target_albums);
 
 % Simple linear regression on the log of the variables
-X = [log10(fb_likes_t), ones(size(fb_likes_t))];
+X = [log10(fb_likes_t), log10(tw_follower_t), ones(size(fb_likes_t))];
 y = log10(youtube_views_delta);
 beta = X \ y;
 plot(X(:,1), y, 'o')

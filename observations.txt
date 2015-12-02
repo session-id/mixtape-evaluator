@@ -72,3 +72,8 @@ The change in number of tracks per day that an artist gets on iTunes doesn't cha
     1.5460    1.5597
 
 so it shouldn't really matter which factor is used as the responding variable in analysis.
+
+
+Myspace?
+
+An analysis of the NaN counts in various fields revealed that MySpace data is available for a surprising number of artist days, a potential candidate for easy to use additional features in addition to the current Facebook and Twitter. Also uncertain if Last.fm works yet in the current formulation.
