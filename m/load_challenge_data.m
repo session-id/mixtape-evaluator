@@ -11,8 +11,8 @@ end
 
 % Find times when there is data for artist reaching both backwards and
 % forwards
-shift_back = 28; % Number of days to shift all data backwards by
-shift_forward = 14; % Number of days to shift all data forwards by
+shift_back = 7; % Number of days to shift all data backwards by
+shift_forward = 7; % Number of days to shift all data forwards by
 back_buffer = -ones([shift_back, 1]);
 forward_buffer = -ones([shift_forward, 1]);
 artist_shift_f = [forward_buffer; C{2}(1:end-shift_forward)];
@@ -47,15 +47,16 @@ itunes_albums_delta = n_delta(cumsum(temp), shift_back);
 itunes_albums_delta2 = n_delta(cumsum(temp), shift_forward);
 itunes_albums_delta = [itunes_albums_delta(shift_back+1:end);...
     ones([shift_back, 1])];
-has_itunes_delta = ~isnan(C{102}) & ~isnan(C{103});
+has_itunes_delta = ~isnan(C{103});
+has_albums_delta = ~isnan(C{102});
 
 % fb_likes_delta contains total delta of fb likes over last week. It's sort
 % of like a measure of recent artist momentum
 fb_likes_delta = n_delta(C{6}, shift_forward);
 has_fb_likes_delta = ~isnan(fb_likes_delta);
 
-target_albums = find(album_releases & has_fb_likes_t & has_youtube_delta...
-    & viable_days & has_fb_likes_delta);
+target_albums = find(album_releases & has_itunes_delta & viable_days...
+    & has_fb_likes_t & has_twitter_followers_t);
 
 % Make linear regression features
 fb_likes_t = C{6}(target_albums);
@@ -63,10 +64,11 @@ tw_followers_t = C{74}(target_albums);
 fb_likes_delta = fb_likes_delta(target_albums);
 fb_likes_delta_sc = max(fb_likes_delta, 1) ./ fb_likes_t;
 youtube_views_delta = youtube_views_delta(target_albums);
-
+delta_tracks = safelog(itunes_tracks_delta) - safelog(itunes_tracks_delta2);
 % Simple linear regression on the log of the variables
-X = [log10(fb_likes_t), log10(tw_follower_t), ones(size(fb_likes_t))];
-y = log10(youtube_views_delta);
+
+X = [safelog(fb_likes_t), safelog(tw_followers_t), ones(length(target_albums), 1)];
+y = delta_tracks(target_albums);
 beta = X \ y;
 plot(X(:,1), y, 'o')
 hold on
