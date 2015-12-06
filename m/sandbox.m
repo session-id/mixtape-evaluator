@@ -9,3 +9,8 @@ for i=1:length(target_albums)
     paths(:,i) = vec / sum(vec);
 end
 plot(paths)
+
+temp = C{103};
+temp(isnan(temp)) = 0; % Set all NaN's to zero
+n_itunes_tracks_delta = shift(n_delta(cumsum(temp), shift_back), -shift_back+1);
+n_itunes_tracks_delta2 = shift(n_delta(cumsum(temp), shift_forward), 1);

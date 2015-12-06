@@ -1,0 +1,600 @@
+
+%% mixtape_evaluator.tex
+%% V1.0
+%% 2015/12/04
+%% by Pedro Garzon, Vinson Luo, and Reynis Vazquez
+%
+\documentclass[conference]{IEEEtran}
+\usepackage{blindtext, graphicx}
+% Add the compsoc option for Computer Society conferences.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference]{../sty/IEEEtran}
+
+
+
+
+
+% Some very useful LaTeX packages include:
+% (uncomment the ones you want to load)
+
+
+% *** MISC UTILITY PACKAGES ***
+%
+%\usepackage{ifpdf}
+% Heiko Oberdiek's ifpdf.sty is very useful if you need conditional
+% compilation based on whether the output is pdf or dvi.
+% usage:
+% \ifpdf
+%   % pdf code
+% \else
+%   % dvi code
+% \fi
+% The latest version of ifpdf.sty can be obtained from:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/oberdiek/
+% Also, note that IEEEtran.cls V1.7 and later provides a builtin
+% \ifCLASSINFOpdf conditional that works the same way.
+% When switching from latex to pdflatex and vice-versa, the compiler may
+% have to be run twice to clear warning/error messages.
+
+% *** CITATION PACKAGES ***
+%
+\usepackage{cite}
+% cite.sty was written by Donald Arseneau
+% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+% \cite{} output to follow that of IEEE. Loading the cite package will
+% result in citation numbers being automatically sorted and properly
+% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+% \cite will automatically add leading space, if needed. Use cite.sty's
+% noadjust option (cite.sty V3.8 and later) if you want to turn this off.
+% cite.sty is already installed on most LaTeX systems. Be sure and use
+% version 4.0 (2003-05-27) and later if using hyperref.sty. cite.sty does
+% not currently provide for hyperlinked citations.
+% The latest version can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/cite/
+% The documentation is contained in the cite.sty file itself.
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  %\usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at: 
+% http://www.ctan.org/tex-archive/macros/latex/required/graphics/
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found as epslatex.ps or
+% epslatex.pdf at: http://www.ctan.org/tex-archive/info/
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdftex
+
+% *** MATH PACKAGES ***
+%
+\usepackage[cmex10]{amsmath}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+% A popular package from the American Mathematical Society that provides
+% many useful and powerful commands for dealing with mathematics. If using
+% it, be sure to load this package with the cmex10 option to ensure that
+% only type 1 fonts will utilized at all point sizes. Without this option,
+% it is possible that some math symbols, particularly those within
+% footnotes, will be rendered in bitmap form which will result in a
+% document that can not be IEEE Xplore compliant!
+%
+% Also, note that the amsmath package sets \interdisplaylinepenalty to 10000
+% thus preventing page breaks from occurring within multiline equations. Use:
+%\interdisplaylinepenalty=2500
+% after loading amsmath to restore such page breaks as IEEEtran.cls normally
+% does. amsmath.sty is already installed on most LaTeX systems. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/amslatex/math/
+
+% *** SPECIALIZED LIST PACKAGES ***
+%
+%\usepackage{algorithmic}
+% algorithmic.sty was written by Peter Williams and Rogerio Brito.
+% This package provides an algorithmic environment fo describing algorithms.
+% You can use the algorithmic environment in-text or within a figure
+% environment to provide for a floating algorithm. Do NOT use the algorithm
+% floating environment provided by algorithm.sty (by the same authors) or
+% algorithm2e.sty (by Christophe Fiorio) as IEEE does not use dedicated
+% algorithm float types and packages that provide these will not provide
+% correct IEEE style captions. The latest version and documentation of
+% algorithmic.sty can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithms/
+% There is also a support site at:
+% http://algorithms.berlios.de/index.html
+% Also of interest may be the (relatively newer and more customizable)
+% algorithmicx.sty package by Szasz Janos:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithmicx/
+
+% *** ALIGNMENT PACKAGES ***
+%
+\usepackage{array}
+% Frank Mittelbach's and David Carlisle's array.sty patches and improves
+% the standard LaTeX2e array and tabular environments to provide better
+% appearance and additional user controls. As the default LaTeX2e table
+% generation code is lacking to the point of almost being broken with
+% respect to the quality of the end results, all users are strongly
+% advised to use an enhanced (at the very least that provided by array.sty)
+% set of table tools. array.sty is already installed on most systems. The
+% latest version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/required/tools/
+
+%\usepackage{mdwmath}
+%\usepackage{mdwtab}
+% Also highly recommended is Mark Wooding's extremely powerful MDW tools,
+% especially mdwmath.sty and mdwtab.sty which are used to format equations
+% and tables, respectively. The MDWtools set is already installed on most
+% LaTeX systems. The lastest version and documentation is available at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
+
+% IEEEtran contains the IEEEeqnarray family of commands that can be used to
+% generate multiline equations as well as matrices, tables, etc., of high
+% quality.
+
+%\usepackage{eqparbox}
+% Also of notable interest is Scott Pakin's eqparbox package for creating
+% (automatically sized) equal width boxes - aka "natural width parboxes".
+% Available at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/eqparbox/
+
+% *** SUBFIGURE PACKAGES ***
+%\usepackage[tight,footnotesize]{subfigure}
+% subfigure.sty was written by Steven Douglas Cochran. This package makes it
+% easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
+% work, it is a good idea to load it with the tight package option to reduce
+% the amount of white space around the subfigures. subfigure.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at:
+% http://www.ctan.org/tex-archive/obsolete/macros/latex/contrib/subfigure/
+% subfigure.sty has been superceeded by subfig.sty.
+
+%\usepackage[caption=false]{caption}
+%\usepackage[font=footnotesize]{subfig}
+% subfig.sty, also written by Steven Douglas Cochran, is the modern
+% replacement for subfigure.sty. However, subfig.sty requires and
+% automatically loads Axel Sommerfeldt's caption.sty which will override
+% IEEEtran.cls handling of captions and this will result in nonIEEE style
+% figure/table captions. To prevent this problem, be sure and preload
+% caption.sty with its "caption=false" package option. This is will preserve
+% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later 
+% (recommended due to many improvements over 1.2) of subfig.sty supports
+% the caption=false option directly:
+%\usepackage[caption=false,font=footnotesize]{subfig}
+%
+% The latest version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
+% The latest version and documentation of caption.sty can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/caption/
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure. The latest version and documentation can be found at:
+% http://www.ctan.org/tex-archive/macros/latex/base/
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/sttools/
+% Documentation is contained in the stfloats.sty comments as well as in the
+% presfull.pdf file. Do not use the stfloats baselinefloat ability as IEEE
+% does not allow \baselineskip to stretch. Authors submitting work to the
+% IEEE should note that IEEE rarely uses double column equations and
+% that authors should try to avoid such use. Do not be tempted to use the
+% cuted.sty or midfloat.sty packages (also by Sigitas Tolusis) as IEEE does
+% not format its papers in such ways.
+
+% *** PDF, URL AND HYPERLINK PACKAGES ***
+%
+%\usepackage{url}
+% url.sty was written by Donald Arseneau. It provides better support for
+% handling and breaking URLs. url.sty is already installed on most LaTeX
+% systems. The latest version can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/misc/
+% Read the url.sty source comments for usage information. Basically,
+% \url{my_url_here}.
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Predicting Artist and Album Success Using Social Media Metrics}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+\author{\IEEEauthorblockN{Pedro Garzon}
+\IEEEauthorblockA{Stanford University\\
+pgarzon@stanford.edu}
+\and
+\IEEEauthorblockN{Vinson Luo}
+\IEEEauthorblockA{Stanford University\\
+vluo@stanford.edu}
+\and
+\IEEEauthorblockN{Reynis Vazquez}
+\IEEEauthorblockA{Stanford University\\
+reynis@stanford.edu}}
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+% make the title area
+\maketitle
+
+
+\begin{abstract}
+%\boldmath
+\blindtext[1]
+\end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the journal you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals frown on math
+% in the abstract anyway.
+
+% Note that keywords are not normally used for peerreview papers.
+\begin{IEEEkeywords}
+Machine Learning, Album sales, Social Media
+\end{IEEEkeywords}
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Introduction}
+The music industry today is influenced by many factors that simply did not exist twenty years ago---current artists are capable of reaching out to potential fans using forms of online media. They are no longer limited in promoting their music by physical word or mouth or the advertising muscle of a record label. Instead, both artist who are just starting out and who had multiple album hits are using social media to build a presence, brand, and promote their current and upcoming music releases. However, the mediums used to consume music have changed as well. Music can be consumed instantly via online purchase or by streaming as well. More of our interactions with music itself are online rather than on music store shelves or the radio. This makes artists more independent of having to physically push albums.\\
+
+Given metrics on social media platforms, we'd like to predict the success of an artist's upcoming release. Essentially, helping artist who can produce quality music benefits the entire industry, both on the consuming and producing side. Identifying more of these artists early can allow labels to give more artists the opportunities and resources to succeed. With more resources, an artists gains more recognition and acclaim, more fans are generated, and the label maximizes their profit. Thus, by making it easier for quality artists to gain success, a better playing ground set in the music industry for artist's to focus on their music and for listeners to have more great albums to choose from.\\
+
+We'll be measuring success of an upcoming album release by looking both at an artist's track sales along with an artist's iTunes album sales one week after an album release. In order to make our predictions of album success, we'll be looking at social media metrics two weeks prior to an upcoming release. These social media metrics include Facebook likes, Twitter followers, LastFM plays, Myspace friends, Soundcloud plays, Pandora plays and a few others. Social media metrics like these are generated by real people being engaged with the music content. Thus, it should follow that these metrics as features, we can use machine learning methods to predict an album's success. In this paper, we'll use linear regression, naive bayes, and support vector regression to see how well we can predict an album's success in terms of both total iTunes tracks downloads and album downloads one week after an album release.\\
+
+\section{Related Work}
+Previous work on using the Internet to predict album success has yielded some initially unintuitive and contradictory result. An early study of finding the relationship between user generated Internet content and albums sales looked at blog posts and album reviews to see if they correlated with album sales. The results were positive. Essentially, the more legitamate blogs and album reviews were made on an album, the more buzz it had the Internet community, and so the more physical album sales were found. In addition, it was found that only $\frac{1}{6}$ of "high chatter" albums were debut albums. This study used several linear regression varying in which indepndent variables were used such as number of blog reviews, sales rankings, and MySpace friends. p-values were analyzed to make its analysis. The results suggest that high Internet content generally happens when an artist has already had a quality release. This study focused on blog posts and album reviews, however. Thus, it was looking at more closely at content generated by dedicated Internet useres who were engaging with the content. [1]\\
+
+However, a similar study conducted a few years later had opposite results. They found that buzz generated by blogs tended to have no correlation with increasing album sales. Instead, it was found that a high amount of buzz didn't signal an album's sales. More interestingly, it was seen that having a large amount of hype on the Interent for a small artist resulsts in a negative impact in track sales. This isn't the case for an already mainstream artists. They conlude that this results in blogs talking about small artists tend to post ways to engage with individual tracks of an artist for via mp3 download links or links to free streaming. However, it was also found that the increased buzz did The study used panel vector autoregression (PVAR) to look at the bidirectional relationship between the dependent and independent variables. This allowed a way to see they might be affecting each other and allowed for a more comprehensive analysis of how Internet media affects album and track sales. It's suspected that   [2]
+
+
+
+
+
+\section{Dataset and Features}
+The dataset that we used to test build our models was Next Big Sound's Challenge dataset, a set containing social media metrics along with YouTube play counts and iTunes sales data for anonymized artists over the course of roughly two years. There was data available for 1818 artists over a total of 909457 artist-days in the years 2011 and 2012.
+
+For each artist, a variety of different social media metrics were available for Facebook, Instagram, Twitter, Last.fm, MySpace, and SoundCloud in addition to several other music sites. Notably, the date of album releases by artists was also provided, allowing us to narrow our focus to the prediction of short term album success (measured by the number of sales made by an artist in the week following an album release) based on social media metrics.
+
+Much of the data, however, was filled with NaN's, indicating that artists did not have profiles in the various social media services. The median percentage of days for which a metric was unavailable was a high 79.7\%, with only 17 of the 100 fields containing non-NaN data for over 50\% of all artist days.
+
+Because values for most of the metrics spanned several orders of magnitude (very popular artists, for example, could have hundreds of times more tracks sold than average artists), we decided to use the log of most metrics in place of their actual values in our analysis. \textbf{fb\_likes\_distribution.fig?}
+
+We initially settled upon using the number of iTunes tracks sold in the week following an album release as our y variable for regression, as it was the most widely available metric related to artist success (available for 80\% of the data). However, we quickly discovered that, for many artists, album releases did little to change their sales counts from what they were prior to these album releases. As a result, we decided to also look at predicting the change in track sales following an album release (measured as $\Delta_{track} = log(sales\_after/sales\_before)$) as a possible measure of \textit{album} and not \textit{artist} success. \textbf{delta\_tracks\_distribution.fig}
+
+We also imposed the additional restriction that artist data for the 7 days prior to an album release also be available, so that we could use more advanced predictors besides metrics on the day of a release.
+
+This resulted in a total of 1672 initial album releases that could be used as examples for both training and testing. To deal with the presence of NaN's inside the data, we used different methods that varied based on the methods we used.
+
+\section{Methods}
+\subsection{Linear Regression}
+The first form of regression we tried on the data was a simple ordinary least squares linear regression. We were looking to predict a real valued metric based on a vector of features at every album release, so using least squares was a reasonable first approach. Because there is no easy way to deal with NaN's in a linear regression, we decided to restrict our data to those artist-days where the Facebook likes and Twitter followers for the day were all not NaN (very few, if any points, had no NaN's for a larger subset of relevant social media metrics).
+
+We then constructed a matrix $X$ with the first two columns consisting of the total number of Facebook page likes and the total number of Twitter followers for artists on the artist-datas selected by the criteria above. A column of ones was added at the end of the X vector to include an intercept term in the linear regression. $y$ simply consisted of the values of $\Delta_{track}$ at the corresponding days.
+
+The least squares regression model seeks to fit a parameter $\theta$ such that predictions of a responding variable $y$ given an observed vector $x$ are given by
+$$h_\theta(x) = \theta^T x$$
+Formally, we minimize the sum of squared differences between the values of $h_\theta(x^{(i)})$ and $y^{(i)}\}$ given observations $\{(x^{(i)}, y^{(i)}); i = 1,\dots,m\}$. This is done by minimizing the cost function
+$$J(\theta) = \frac{1}{2}\sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$$
+In our formulation, this problem simplifies to minimizing $J(\theta) = \frac{1}{2} (X\theta - y)^2$ with respect to theta, yielding the optimal value $\hat{\theta}$ given by
+$$\hat{\theta} = (X^T X)^{-1} X^T y$$
+
+\subsection{Naive Bayes}
+The Naive Bayes classifier provides a more explicit method of dealing with NaN's, but in order for the classifier to be used, both the predictors and responding variable have to first be discretized into separate classes.
+
+Values for each metric were turned into discrete features by measuring how many half standard deviations they were away from the mean non-NaN value for the metric (all values greater than two standard deviations from the mean were placed on boundary categories on both sides), and NaN values were assigned to a separate category. This allowed us to change each predictor $x^{(i)}$ and responder $y^{(i)}$ into a vector of multinomial variables (each of which has 11 possible values). \textbf{May change later!}
+
+The buckets themselves were assigned in this manner: $(-Inf, -2\sigma)\rightarrow1, (-2\sigma, -1.5\sigma)\rightarrow2,\dots(1.5\sigma,2\sigma)\rightarrow9, (2\sigma,Inf)\rightarrow10, NaN\rightarrow11$. Because the responding variable ($\Delta_{tracks}$) was never NaN, the difference between the predicted bucket for $\Delta_{tracks}^{(i)}$ and the actual bucket of $\Delta_{tracks}^{(i)}$ can be used to provide a rough estimate of the standard error of the Naive Bayes classifier in the context of regression. All that needs to be done to get this rough estimate of the absolute error in predicting $\Delta_{tracks}$ is to multiply the average error measured in number of buckets by half the standard deviation of $\Delta_{tracks}$.
+
+The Naive Bayes classifier is based on the strong assumption that all individual features $x_i$ (in our case the values of the multinomial variables corresponding to each field) in observation $x$ are conditionally independent given the corresponding class $y$. This allows us to simplify the conditional probability $p(x|y)$ of observation $x$ occuring given class $y$ into
+$$p(x|y) = p(x_1,\dots,x_n | y) = \prod_{i=1}^n p(x_i|y)$$
+where all values of $p(x_i|y)$ can be much more efficiently computed and stored than values of $p(x_1,\dots x_n|y)$. Using Bayes' Rule, we can now easily use these conditional probabilities $p(x|y)$ along with class probabilities $p(y=k)$ to make predictions:
+$$p(y=k|x) = \frac{p(x|y=k)p(y=k)}{p(x)}$$
+The best class fitting an observation $x$ would then be given by $\argmax_k p(y=k|x)$.
+
+Maximum likelihood estimates for the multinomial variables in the Naive Bayes classifier are easily fit by simply tallying up the occurrences of $\{x^{(i)}_j = l \wedge y^{(i)} = k\}, i=1,\dots,m, j=1,\dots,n$ for $l,k=1,\dots,n_{categories}$, where $n$ is the number of features for each $x^{(i)}$ and $n_{categories}$ is the number of discrete categories for both the predictors and responder (in our case 11). To assign reasonable nonzero probabilities to the occurrence of all events, we use Laplace smoothing, a technique equivalent to initializing the classifier with one occurrence of each $\{x^{(i)}_j = l \wedge y^{(i)} = k\}$ event.
+
+It is true that the features in our data certainly violate the Naive Bayes assumption; Facebook likes and Twitter followers, for example, actually show very strong correlation despite having not much correlation with $\Delta_{tracks}$. Practically speaking, however, Naive Bayes typically still works well even in situations where there may be correlation between input variables.
+
+\section{Results}
+To evaluate the performance of each of our models, we evaluated their standard error in the prediction of $\Delta_{tracks}$ on a test set after being trained on a separate training set. To get an absolute sense of how effective each of the methods were, we can measure the percentage of variance in $\Delta_{tracks}$ explained by a method. For reference, the variance of $\Delta_{tracks}$ alone was 0.0764.
+\subsection{Linear Regression}
+The linear regression approach we initially used was incapable of dealing with NaN's, so we had to narrow down our initial set of album releases to only the 1051 releases that contained both artist Facebook and Twitter data.
+
+It's important to note that by throwing out those artists who do not have both Facebook and Twitter accounts, we inherently bias the values of $\Delta_{tracks}$ that we look at. This is apparent when we compare the CDF's of the distribution of $\Delta_{tracks}$ for artists that have both Facebook and Twitter and metrics and those that only have one or neither: \textbf{delta\_tracks\_social\_media\_cdfs.fig}
+
+Artists that have both Facebook and Twitter accounts typically have better album success (as measured by $\Delta_{tracks}$), indicating that there is definite information that can be gleaned from the fact that artists are missing a social media profile. For now, we set aside this difference and continue to focus on those artists that have both Facebook and Twitter data to see how these two predictors factor into an artist's change in track sales.
+
+Our results match up with the somewhat counterintuitive results of \textbf{Citation for that one paper} in that Facebook likes and Twitter followers were actually negatively correlated with album success as measured by $\Delta_{tracks}$. The covariance matrix for Facebook likes, Twitter followers, and $\Delta_{tracks}$ is shown in \textbf{Table 1}.
+
+The resulting linear predictor had a standard error of 0.2482, corresponding to a variance of 0.0616. The additional two features, then, only explain 2.2\% of the variance of the restricted dataset, adding little additional predictive power.
+
+\begin{table}[!t]
+% increase table row spacing, adjust to taste
+\renewcommand{\arraystretch}{1.3}
+\caption{Covariance Matrix for FB likes, Tw Followers, and $\Delta_{tracks}$}
+\label{covariance_1}
+\centering
+\begin{tabular}{c|ccc}
+ & FB & Tw & $\Delta_{tracks}$\\
+\hline
+FB & 0.9940 & 0.7459 & -0.0356\\
+Tw & 0.7459 & 1.0733 & -0.0203\\
+$\Delta_{tracks}$ & -0.0356 & -0.0203 & 0.0630
+\end{tabular}
+\end{table}
+
+% needed in second column of first page if using \IEEEpubid
+%\IEEEpubidadjcol
+
+% An example of a floating figure using the graphicx package.
+% Note that \label must occur AFTER (or within) \caption.
+% For figures, \caption should occur after the \includegraphics.
+% Note that IEEEtran v1.7 and later has special internal code that
+% is designed to preserve the operation of \label within \caption
+% even when the captionsoff option is in effect. However, because
+% of issues like this, it may be the safest practice to put all your
+% \label just after \caption rather than within \caption{}.
+%
+% Reminder: the "draftcls" or "draftclsnofoot", not "draft", class
+% option should be used if it is desired that the figures are to be
+% displayed while in draft mode.
+%
+%\begin{figure}[!t]
+%\centering
+%\includegraphics[width=2.5in]{myfigure}
+% where an .eps filename suffix will be assumed under latex, 
+% and a .pdf suffix will be assumed for pdflatex; or what has been declared
+% via \DeclareGraphicsExtensions.
+%\caption{Simulation Results}
+%\label{fig_sim}
+%\end{figure}
+
+% Note that IEEE typically puts floats only at the top, even when this
+% results in a large percentage of a column being occupied by floats.
+
+
+% An example of a double column floating figure using two subfigures.
+% (The subfig.sty package must be loaded for this to work.)
+% The subfigure \label commands are set within each subfloat command, the
+% \label for the overall figure must come after \caption.
+% \hfil must be used as a separator to get equal spacing.
+% The subfigure.sty package works much the same way, except \subfigure is
+% used instead of \subfloat.
+%
+%\begin{figure*}[!t]
+%\centerline{\subfloat[Case I]\includegraphics[width=2.5in]{subfigcase1}%
+%\label{fig_first_case}}
+%\hfil
+%\subfloat[Case II]{\includegraphics[width=2.5in]{subfigcase2}%
+%\label{fig_second_case}}}
+%\caption{Simulation results}
+%\label{fig_sim}
+%\end{figure*}
+%
+% Note that often IEEE papers with subfigures do not employ subfigure
+% captions (using the optional argument to \subfloat), but instead will
+% reference/describe all of them (a), (b), etc., within the main caption.
+
+
+% An example of a floating table. Note that, for IEEE style tables, the 
+% \caption command should come BEFORE the table. Table text will default to
+% \footnotesize as IEEE normally uses this smaller font for tables.
+% The \label must come after \caption as always.
+%
+%\begin{table}[!t]
+%% increase table row spacing, adjust to taste
+%\renewcommand{\arraystretch}{1.3}
+% if using array.sty, it might be a good idea to tweak the value of
+% \extrarowheight as needed to properly center the text within the cells
+%\caption{An Example of a Table}
+%\label{table_example}
+%\centering
+%% Some packages, such as MDW tools, offer better commands for making tables
+%% than the plain LaTeX2e tabular which is used here.
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{table}
+
+
+% Note that IEEE does not put floats in the very first column - or typically
+% anywhere on the first page for that matter. Also, in-text middle ("here")
+% positioning is not used. Most IEEE journals use top floats exclusively.
+% Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
+% floats. This can be corrected via the \fnbelowfloat command of the
+% stfloats package.
+
+
+
+\section{Conclusion}
+\blindtext
+
+
+
+
+
+% if have a single appendix:
+%\appendix[Proof of the Zonklar Equations]
+% or
+%\appendix  % for no appendix heading
+% do not use \section anymore after \appendix, only \section*
+% is possibly needed
+
+% use appendices with more than one appendix
+% then use \section to start each appendix
+% you must declare a \section before using any
+% \subsection or using \label (\appendices by itself
+% starts a section numbered zero.)
+%
+
+
+\appendices
+\section{Proof of the First Zonklar Equation}
+\blindtext
+
+% use section* for acknowledgement
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\begin{thebibliography}{1}
+
+\bibitem{IEEEhowto:kopka}
+http://www.sciencedirect.com/science/article/pii/S1094996809000723
+
+\bibitem{IEEEhowto:kopka}
+http://www.sciencedirect.com/science/article/pii/S1094996809000723
+
+
+
+\end{thebibliography}
+
+% biography section
+% 
+% If you have an EPS/PDF photo (graphicx package needed) extra braces are
+% needed around the contents of the optional argument to biography to prevent
+% the LaTeX parser from getting confused when it sees the complicated
+% \includegraphics command within an optional argument. (You could create
+% your own custom macro containing the \includegraphics command to make things
+% simpler here.)
+%\begin{biography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
+% or if you just want to reserve a space for a photo:
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{picture}}]{John Doe}
+\blindtext
+\end{IEEEbiography}
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+
+% that's all folks
+\end{document}
+
+
