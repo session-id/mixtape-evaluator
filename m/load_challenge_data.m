@@ -31,6 +31,7 @@ has_twitter_followers_t = ~isnan(C{74}); % Twitter_Followers_t
 youtube_views_delta = n_delta(C{101}, shift_back);
 youtube_views_delta = [youtube_views_delta(shift_back+1:end);...
     ones([shift_back, 1])];
+youtube_views_delta2 = n_delta(C{101}, shift_forward);
 has_youtube_delta = ~isnan(youtube_views_delta);
 
 % iTunes album and track data
@@ -47,7 +48,8 @@ itunes_albums_delta = n_delta(cumsum(temp), shift_back);
 itunes_albums_delta2 = n_delta(cumsum(temp), shift_forward);
 itunes_albums_delta = [itunes_albums_delta(shift_back+1:end);...
     ones([shift_back, 1])];
-has_itunes_delta = ~isnan(C{103});
+has_itunes_delta = ~isnan(C{103}) & ~isnan(shift(C{103},shift_forward))...
+    & isnan(shift(C{103},-shift_back));
 has_albums_delta = ~isnan(C{102});
 
 % fb_likes_delta contains total delta of fb likes over last week. It's sort
@@ -63,18 +65,15 @@ fb_likes_t = C{6}(target_albums);
 tw_followers_t = C{74}(target_albums);
 fb_likes_delta = fb_likes_delta(target_albums);
 fb_likes_delta_sc = max(fb_likes_delta, 1) ./ fb_likes_t;
-youtube_views_delta = youtube_views_delta(target_albums);
+%youtube_views_delta = youtube_views_delta(target_albums);
 delta_tracks = safelog(itunes_tracks_delta) - safelog(itunes_tracks_delta2);
 % Simple linear regression on the log of the variables
 
 X = [safelog(fb_likes_t), safelog(tw_followers_t), ones(length(target_albums), 1)];
 y = delta_tracks(target_albums);
 beta = X \ y;
-plot(X(:,1), y, 'o')
-hold on
 xspace = [linspace(min(X(:,1)),max(X(:,1)),10)', ones([10 1])];
-plot(xspace(:,1), xspace * beta)
-hold off
+plot(X(:,1), y, 'o', xspace(:,1), xspace * beta, '-r')
 
 error = X * beta - y;
 error_stdev = sqrt(sum(error .^ 2) / length(y))
