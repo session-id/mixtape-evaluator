@@ -34,6 +34,7 @@ end
 %}
 
 % Hand coded Naive Bayes to work with the prescribed labels
+t = cputime;
 
 X_master = features(:,1:end-num_buckets);
 y_master = features(:,end-num_buckets+1:end);
@@ -98,3 +99,5 @@ end
 
 accuracy = num_correct / size(X,1)
 avg_error = total_error / size(X,1)
+
+e = cputime - t

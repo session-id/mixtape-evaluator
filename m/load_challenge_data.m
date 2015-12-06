@@ -37,10 +37,17 @@ has_youtube_delta = ~isnan(youtube_views_delta);
 % iTunes album and track data
 temp = C{103};
 temp(isnan(temp)) = 0; % Set all NaN's to zero
+%{
 itunes_tracks_delta = n_delta(cumsum(temp), shift_back);
 itunes_tracks_delta2 = n_delta(cumsum(temp), shift_forward);
 itunes_tracks_delta = [itunes_tracks_delta(shift_back+1:end);...
     ones([shift_back, 1])];
+%}
+itunes_tracks_delta = shift(n_delta(cumsum(temp), shift_back), -shift_back+1);
+itunes_tracks_delta2 = shift(n_delta(cumsum(temp), shift_forward), 1);
+
+track_momentum = shift(n_delta(C{103}, shift_forward-1)...
+    ./ (abs(n_sum(C{103}, shift_forward-1)) + 1), 1);
 
 temp = C{102};
 temp(isnan(temp)) = 0; % Set all NaN's to zero
@@ -48,9 +55,10 @@ itunes_albums_delta = n_delta(cumsum(temp), shift_back);
 itunes_albums_delta2 = n_delta(cumsum(temp), shift_forward);
 itunes_albums_delta = [itunes_albums_delta(shift_back+1:end);...
     ones([shift_back, 1])];
-has_itunes_delta = ~isnan(C{103}) & ~isnan(shift(C{103},shift_forward))...
-    & isnan(shift(C{103},-shift_back));
-has_albums_delta = ~isnan(C{102});
+has_itunes_delta = (C{103} >= 0) & (shift(C{103},shift_forward) >= 0)...
+    & (shift(C{103},-shift_back) >= 0);
+has_albums_delta = ~isnan(C{102}) & ~isnan(shift(C{102},shift_forward))...
+    & ~isnan(shift(C{102},-shift_back));
 
 % fb_likes_delta contains total delta of fb likes over last week. It's sort
 % of like a measure of recent artist momentum
