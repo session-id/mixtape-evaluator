@@ -48,6 +48,8 @@ itunes_tracks_delta2 = shift(n_delta(cumsum(temp), shift_forward), 1);
 
 track_momentum = shift(n_delta(C{103}, shift_forward-1)...
     ./ (abs(n_sum(C{103}, shift_forward-1)) + 1), 1);
+track_momentum(track_momentum < -1.1) = -1.1;
+track_momentum(track_momentum > 1.1) = 1.1;
 
 temp = C{102};
 temp(isnan(temp)) = 0; % Set all NaN's to zero
