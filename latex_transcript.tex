@@ -339,7 +339,7 @@ Much of the data, however, was filled with NaN's, indicating that artists did no
 
 Because values for most of the metrics spanned several orders of magnitude (very popular artists, for example, could have hundreds of times more tracks sold than average artists), we decided to use the log of most metrics in place of their actual values in our analysis.
 
-We initially settled upon using the number of iTunes tracks sold in the week following an album release as our y variable for regression, as it was the most widely available metric related to artist success (available for 80\% of the data). However, we quickly discovered that, for many artists, album releases did little to change their sales counts from what they were prior to these album releases. As a result, we decided to also look at predicting the change in track sales following an album release (measured as $\Delta_{track} = log(sales\_after/sales\_before)$) as a possible measure of \textit{album} and not \textit{artist} success. \textbf{delta\_tracks\_distribution2.fig}
+We initially settled upon using the number of iTunes tracks sold in the week following an album release as our y variable for regression, as it was the most widely available metric related to artist success (available for 80\% of the data). However, we quickly discovered that, for many artists, album releases did little to change their sales counts from what they were prior to these album releases. As a result, we decided to also look at predicting the change in track sales following an album release (measured as $\Delta_{tracks} = log(sales\_after/sales\_before)$) as a possible measure of \textit{album} and not \textit{artist} success. \textbf{delta\_tracks\_distribution2.fig}
 
 This resulted in a total of 1543 album releases that could be used as examples for both training and testing. 100 random samples of the evolution of track sales per day for an artist around an album release are shown in the figure below. Here, day 7 (the day corresponding to peaks in several of the sales paths) represents the day that an album was released. \textbf{sales\_paths.fig}
 
@@ -355,7 +355,7 @@ where $s_t$ is the total number of iTunes track sales on artist-day t. This acce
 \subsection{Linear Regression}
 The first form of regression we tried on the data was a simple ordinary least squares linear regression. We were looking to predict a real valued metric based on a vector of features at every album release, so using least squares was a reasonable first approach. Because there is no easy way to deal with NaN's in a linear regression, for every set of features we tried we had to restrict our data to only those artist-days for which all features had actual values.
 
-We then constructed a predictor matrix $X$ with each row corresponding to values of the predictors on an artist-days selected by the criteria above. A column of ones was added at the end of the X vector to include an intercept term in the linear regression. $y$ simply consisted of the values of $\Delta_{track}$ at the corresponding days. Predictors we tried using included Facebook likes, Twitter followers, and iTunes track sales acceleration.
+We then constructed a predictor matrix $X$ with each row corresponding to values of the predictors on an artist-days selected by the criteria above. A column of ones was added at the end of the X vector to include an intercept term in the linear regression. $y$ simply consisted of the values of $\Delta_{tracks}$ at the corresponding days. Predictors we tried using included Facebook likes, Twitter followers, and iTunes track sales acceleration.
 
 The least squares regression model seeks to fit a parameter $\theta$ such that predictions of a responding variable $y$ given an observed vector $x$ are given by
 $$h_\theta(x) = \theta^T x$$
@@ -367,16 +367,9 @@ $$\hat{\theta} = (X^T X)^{-1} X^T y$$
 \subsection{Naive Bayes}
 The Naive Bayes classifier provides a more explicit method of dealing with NaN's, but in order for the classifier to be used, both the predictors and responding variable have to first be discretized into separate classes.
 
-Values for each metric were turned into discrete features by first shifting all values so that the \textit{median} value of the metric was 0, and then bucketing the values based on the standard deviation $\sigma$ of all non-NaN values. While it may seem odd that we decided to center data on the median rather than the mean, in practice using the median results in massive improvement due to the presence of extreme outliers in some metrics. The buckets $b_i$ were assigned in the following manner: $(-Inf, -1.75\sigma)\rightarrow b_1, (-1.75\sigma, -1.25\sigma)\rightarrow b_2, \dots (1.25\sigma,1.75\sigma)\rightarrow b_8, (1.75\sigma,Inf)\rightarrow b_9, NaN\rightarrow b_{10}$.
+Values for each metric were turned into discrete features by first shifting all values so that the \textit{median} value of the metric was 0, and then bucketing the values based on the standard deviation $\sigma$ of all non-NaN values. While it may seem odd that we decided to center data on the median rather than the mean, in practice using the median results in massive improvement due to the presence of extreme outliers in some metrics. The buckets $b_i$ were assigned in the following manner: $(-Inf, -1.75\sigma)\mapsto b_1, (-1.75\sigma, -1.25\sigma)\mapsto b_2, \dots (1.25\sigma,1.75\sigma)\mapsto b_8, (1.75\sigma,Inf)\mapsto b_9, NaN\mapsto b_{10}$.
 
-This allowed us to change each predictor $x^{(i)}$ and responder $y^{(i)}$ into a vector of multinomial variables (each of which has 10 possible values). Because adjacent bucket indices for the multinomial responding variable imply adjacent values for the real-valued $y^{(i)}$, there is actually a simple way to obtain a rough estimate of the standard error of this Naive Bayes classifier in the context of regression.
-
-If we interpret the discrete output bucket $i$ of the classifier as predicting $y$ to be the center of their corresponding bucket ($c_i$) and make the assumption that values of $\Delta_{tracks}$ are uniformly distributed in the actual responding bucket with center $c_j$, then we can actually estimate the expected error of this prediction as:
-$$error = E[(c_i - (c_j + \epsilon))^2], \epsilon \in \mathcal{N}(0, \frac{\sigma}{12})$$
-where $\frac{1}{12}$ is the variance of a uniformly distributed variable on $[-0.5, 0.5]$. This expression simplifies to:
-$$error = E[(c_i - c_j)^2] + E[\epsilon^2] = \frac{\sigma}{2} (E[(i-j)^2] + \frac{1}{12})$$
-
-Thus, by averaging the squared difference between the predicted and observed bucket numbers across all test examples and adding $1/12$, we can estimate the average variance of our model and get a decent estimate of the standard error. Note that even if our assumption of uniformly distributed values inside the responding bucket is not true (as it probably isn't), $E[\epsilon^2]$ can be at most 0.25, and likely much less.
+This allowed us to change each predictor $x^{(i)}$ and responder $y^{(i)}$ into a vector of multinomial variables (each of which has 10 possible values). If we interpret the discrete output bucket $i$ of the classifier as predicting $y$ to be the center $c_i$ of their corresponding bucket, then we can also obtain a standard error for the Naive Bayes classifier by comparing this center to the actual value $y^{(i)}$ for that observation.
 
 The Naive Bayes classifier itself is based on the strong assumption that all individual features $x_i$ (in our case the values of the multinomial variables corresponding to each field) in observation $x$ are conditionally independent given the corresponding class $y$. This allows us to simplify the conditional probability $p(x|y)$ of observation $x$ occuring given class $y$ into
 $$p(x|y) = p(x_1,\dots,x_n | y) = \prod_{i=1}^n p(x_i|y)$$
@@ -483,31 +476,35 @@ All three & 984 & 0.3203 & 0.1370 & 25\%\\
 \subsection{Naive Bayes}
 The Naive Bayes classifier was able to explicitly deal with NaN's, allowing it to work with all 1543 albums that had iTunes sales data. This capability also allowed us to easily test any feature we wanted on the resulting classifier.
 
-We tried running the Naive Bayes classifier to predict $\Delta_{tracks}$ using several different sets of predictors. For each set, the average estimated standard error was computed using the same cross validation technique as linear regression, except this time 90\% of the data in each of 500 iterations was devoted to training and 10\% was devoted to testing.
+We tried running the Naive Bayes classifier to predict $\Delta_{tracks}$ using several different sets of predictors. For each set, the average estimated standard error was computed using the same cross validation technique as linear regression, except this time 90\% of the data in each of 1000 iterations was devoted to training and 10\% was devoted to testing. This was designed to ensure that there was a sufficient amount of training data for the Naive Bayes classifier, which requires more data points (given the number of features it deals with) than linear regression.
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.1}
-\caption{Average Standard Error in OLS Regression of $\Delta_{tracks}$}
+\caption{Average Standard Error in Naive Bayes Regression of $\Delta_{tracks}$}
 \label{std_error_lin_reg}
 \centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 Predictor Set & Average Standard Error & \% Var. explained\\
 \hline
-1 & 0.310 & 26\%\\
+1 & 0.332 & 15\%\\
 \hline
-2 & 0.301 & 30\%\\
+2 & 0.401 & -23\%*\\
 \hline
-3 & 0.301 & 30\%\\
+3 & 0.331 & 15\%\\
 \hline
-4 & 0.365 & -3\%*
+4 & 0.332 & 15\%\\
+\hline
+5 & 0.331 & 16\%\\
+\hline
 \end{tabular}
+
 * Introduced additional variance (worse predictor than mean)
 \end{table}
 
-\textbf{Table 3} displays the estimated standard error of the Naive Bayes classifier using cross-validation. Set 1 contained just iTunes sales accelerations; Set 2 contained accelerations and Facebook likes; Set 3 contained accelerations, Facebook likes, Last.fm plays, Twitter followers, and Twitter tweets; Set 4 contained accelerations as well as all available cumulative social media metrics (40 total).
+\textbf{Table 3} displays the estimated standard error of the Naive Bayes classifier using cross-validation. Set 1 contained just iTunes sales accelerations; Set 2 contained accelerations and Facebook likes; Set 3 contained accelerations and Last.fm plays; Set 4 contained accelerations and Twitter followers; Set 5 contained accelerations, Last.fm plays, Twitter followers, and Twitter tweets.
 
-Simply using Facebook likes in conjunction with accelerations already produced the high 30\% variance explained statistic. 
+It's hard to tell from this data alone whether there exists a set of features would allow the Naive Bayes classifier to perform better than the 21\% variance explained statistic derived from linear regression using accelerations. However, the fact that the widely available metrics of Facebook likes, Twitter followers, and Last.fm plays all did little to improve the error of the final model (Facebook likes actually hurt the model) doesn't bode well for classifiers using larger sets of predictors. Due to time limitations, we decided not to pursue further variations of the Naive Bayes model, though techniques such as forward search could definitely be used to optimize the set of predictors used.
 
 \subsection{Support Vector Regression}
 Using a radial basis function kernel and support vector regression, we mapped our Facebook and Twitter metrics features to a higher-dimension to account for a non-linear relationship within our features. This produced a mean squared error of 0.3838 and a squared correlation coefficient of 0.0209, producing a regression significantly worse than linear regression.
@@ -606,7 +603,7 @@ In trying to overcome initial problems of overfitting, we found that modifying t
 
 
 \section{Conclusion}
-\blindtext
+In the end, the original linear regression model with only acceleration as a predictor was the best at predicting values of $\Delta_{tracks}$
 
 
 
